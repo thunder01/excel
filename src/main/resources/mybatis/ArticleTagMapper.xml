@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ubi.mapper.ArticleTagMapper" >
+  <resultMap id="BaseResultMap" type="com.ubi.model.ArticleTag" >
+    <id column="tbid" property="tbid" jdbcType="BIGINT" />
+    <result column="articletagid" property="articletagid" jdbcType="TINYINT" />
+    <result column="articleid" property="articleid" jdbcType="BIGINT" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <insert id="insert" parameterType="com.ubi.model.ArticleTag" >
+    insert into tb_article_tag (tbid, articletagid, articleid, 
+      createtime)
+    values (#{tbid,jdbcType=BIGINT}, #{articletagid,jdbcType=TINYINT}, #{articleid,jdbcType=BIGINT}, now())
+  </insert>
+
+</mapper>

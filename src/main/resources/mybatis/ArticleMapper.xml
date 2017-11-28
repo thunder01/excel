@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ubi.mapper.ArticleMapper">
+  <resultMap id="BaseResultMap" type="com.ubi.model.Article">
+    <id column="articleid" jdbcType="BIGINT" property="articleid" />
+    <result column="titile" jdbcType="VARCHAR" property="titile" />
+    <result column="deploytime" jdbcType="TIMESTAMP" property="deploytime" />
+    <result column="validtime" jdbcType="TIMESTAMP" property="validtime" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="visits" jdbcType="BIGINT" property="visits" />
+    <result column="articletype" jdbcType="TINYINT" property="articletype" />
+    <result column="projecttype" jdbcType="TINYINT" property="projecttype" />
+    <result column="cityid" jdbcType="INTEGER" property="cityid" />
+    <result column="srouce" jdbcType="VARCHAR" property="srouce" />
+    <result column="sourceurl" jdbcType="VARCHAR" property="sourceurl" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="provincename" jdbcType="VARCHAR" property="provincename"/>
+    <association property="provinceid" column="provincename" select=""/>
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.ubi.model.Article">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+
+  <insert id="insert" parameterType="com.ubi.model.Article">
+      <selectKey keyProperty="articleid" resultType="long" order="AFTER">
+        SELECT LAST_INSERT_ID()
+      </selectKey>
+      insert into tb_article (articleid, titile, deploytime,
+      validtime, label,
+      articletype, projecttype, cityid, 
+      srouce, sourceurl, summary, 
+      createtime, updatetime, content, provinceid
+      )
+    values (#{articleid,jdbcType=BIGINT}, #{titile,jdbcType=VARCHAR}, #{deploytime,jdbcType=TIMESTAMP}, 
+      #{validtime,jdbcType=TIMESTAMP}, #{label,jdbcType=VARCHAR},
+      #{articletype,jdbcType=TINYINT}, #{projecttype,jdbcType=TINYINT}, #{cityid,jdbcType=INTEGER}, 
+      #{srouce,jdbcType=VARCHAR}, #{sourceurl,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR}, 
+      now(), now(), #{content,jdbcType=LONGVARCHAR},#{provinceid}
+      )
+  </insert>
+
+  <!--获取省份id-->
+  <select id="getProvinceId" parameterType="String" resultType="String">
+    SELECT provinceid FROM tb_provinces WHERE province=#{provincename}
+  </select>
+
+  <!--根据项目类型和查询类型，取得其值-->
+  <select id="getDicvalue" parameterType="map" resultType="String">
+    SELECT dicvalue FROM tb_dictionary WHERE dicitem=#{searchType} AND parentid=
+    (SELECT dicid FROM tb_dictionary WHERE dicitem=#{ProjrctType} AND parentid=2)
+  </select>
+
+  <select id="getArticleId" parameterType="String" resultType="Long">
+    SELECT articleid FROM tb_article WHERE titile=#{titile}
+  </select>
+</mapper>
